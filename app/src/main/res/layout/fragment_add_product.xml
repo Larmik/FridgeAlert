@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ajouter un produit"
+            android:layout_marginBottom="55dp"
+            android:textSize="16sp"/>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:background="@drawable/bg_rounded_corners"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:padding="10dp"
+                android:layout_centerInParent="true"
+                android:tint="@android:color/white"
+                app:srcCompat="@drawable/ic_food_placeholder" />
+
+            <TextView
+                android:id="@+id/add_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="20dp"
+                android:text="Ajouter une image"
+                android:textColor="@color/color4"
+                android:textSize="7sp"
+                android:translationY="-5dp" />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_below="@+id/add_tv"
+                android:layout_centerHorizontal="true"
+                android:tint="@color/color4"
+                android:translationY="5dp"
+                app:srcCompat="@drawable/ic_add" />
+
+        </RelativeLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            app:hintAnimationEnabled="true"
+            android:layout_marginBottom="20dp"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/name_et"
+                android:layout_width="match_parent"
+                android:hint="Nom du produit"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lblDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date de péremption :"/>
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:textSize="16sp"/>
+
+            <DatePicker
+                android:id="@+id/dpResult"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="20dp"/>
+
+            <Button
+                android:id="@+id/validate_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginBottom="20dp"
+                android:text="Ajouter"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
