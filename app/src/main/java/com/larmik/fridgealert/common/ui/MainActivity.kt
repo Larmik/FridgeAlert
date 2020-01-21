@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(), NavigationCallback, ProductCallback {
         setContentView(R.layout.activity_main)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         mService.context = this
-     //   mService.startTimer()
+        mService.startTimer(true)
         bottombar.callback = this
         showFragment(fragmentToShow)
     }

@@ -32,7 +32,7 @@
 
         <service android:name=".TestService" android:exported="false" >
             <intent-filter>
-                <action android:name="fr.larmik.fridgealert.TestService" />
+                <action android:name="com.larmik.fridgealert.TestService" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

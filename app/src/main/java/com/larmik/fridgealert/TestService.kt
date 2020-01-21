@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.*
 import androidx.core.app.NotificationCompat
 import com.larmik.fridgealert.common.ui.MainActivity
+import java.util.*
 
 class TestService : Service() {
 
@@ -17,18 +18,15 @@ class TestService : Service() {
     private val serviceBinder: IBinder = RunServiceBinder()
     var isTimerRunning = false
     private var mCountDownTimer: CountDownTimer? = null
-    private var mTimeLeftInMillis = START_TIME_IN_MILLIS
+    private var mTimeLeftInMillis: Long = 0
 
     override fun onCreate() {
-        mTimeLeftInMillis = START_TIME_IN_MILLIS
         isTimerRunning = false
     }
 
-    fun startTimer() {
-        if (mTimeLeftInMillis == 0L) {
-            resetTimer()
-            startTimer()
-        }
+    fun startTimer(isFirstLaunch : Boolean) {
+        if (isFirstLaunch)
+            mTimeLeftInMillis = getRemaingMillis()
         isTimerRunning = true
         mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -36,18 +34,23 @@ class TestService : Service() {
             }
 
             override fun onFinish() {
-                mTimeLeftInMillis = 0
+                val currentMillis = System.currentTimeMillis()
+                mTimeLeftInMillis = (currentMillis + TEST) - currentMillis
                 sendNotification()
-                startTimer()
+                startTimer(false)
             }
         }.start()
+        if (mTimeLeftInMillis == 0L) {
+            resetTimer()
+            startTimer(false)
+        }
 
     }
 
     private fun resetTimer() {
         mCountDownTimer!!.cancel()
         isTimerRunning = false
-        mTimeLeftInMillis = START_TIME_IN_MILLIS
+        mTimeLeftInMillis = getRemaingMillis()
     }
 
     private fun sendNotification() {
@@ -60,6 +63,13 @@ class TestService : Service() {
             context!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(System.currentTimeMillis().toInt(), createNotification(context!!))
 
+    }
+
+    private fun getRemaingMillis() : Long {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 22)
+        calendar.set(Calendar.MINUTE, 14)
+        return calendar.timeInMillis - System.currentTimeMillis()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -105,6 +115,8 @@ class TestService : Service() {
 
     companion object {
         private const val NOTIFICATION_ID = 1
-        private const val START_TIME_IN_MILLIS: Long = 5000
+        private const val DAY_IN_MILLIS: Long = 12*60*60*1000
+        private const val TEST: Long = 5000
+
     }
 }
