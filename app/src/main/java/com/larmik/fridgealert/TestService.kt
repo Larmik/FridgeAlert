@@ -1,13 +1,13 @@
 package com.larmik.fridgealert
 
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.*
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.PRIORITY_MIN
 import com.larmik.fridgealert.common.ui.MainActivity
 
 class TestService : Service() {
@@ -69,8 +69,27 @@ class TestService : Service() {
     override fun onBind(intent: Intent?): IBinder {
         return serviceBinder
     }
+    private fun startForeground() {
+        val channelId =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createNotificationChannel(context ?: applicationContext)
+            } else {
+                // If earlier version channel ID is not used
+                // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+                ""
+            }
+
+        val notificationBuilder = NotificationCompat.Builder(this, channelId )
+        val notification = notificationBuilder.setOngoing(true)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setPriority(PRIORITY_MIN)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .build()
+        startForeground(101, notification)
+    }
 
     fun foreground() {
+        startForeground()
         startForeground(NOTIFICATION_ID, createNotification(applicationContext))
     }
 
@@ -101,6 +120,17 @@ class TestService : Service() {
     inner class RunServiceBinder : Binder() {
         val service: TestService
             get() = this@TestService
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(context: Context): String{
+        val chan = NotificationChannel("CHANNEL_ID",
+            "channelName", NotificationManager.IMPORTANCE_NONE)
+        chan.lightColor = Color.BLUE
+        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val service = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        service.createNotificationChannel(chan)
+        return "CHANNEL_ID"
     }
 
     companion object {

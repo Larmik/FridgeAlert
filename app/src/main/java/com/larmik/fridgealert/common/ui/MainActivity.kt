@@ -8,6 +8,7 @@ import android.content.ServiceConnection
 import android.os.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.larmik.fridgealert.NotificationReceiver
 import com.larmik.fridgealert.R
 import com.larmik.fridgealert.TestService
 import com.larmik.fridgealert.TestService.RunServiceBinder
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), NavigationCallback, ProductCallback {
 
     private var fragmentToShow = FragmentToShow.HOME
+    val br: NotificationReceiver = NotificationReceiver()
     lateinit var notificationManager : NotificationManager
     var mServiceBound = false
     var mService = TestService()
@@ -46,7 +48,7 @@ class MainActivity : AppCompatActivity(), NavigationCallback, ProductCallback {
         setContentView(R.layout.activity_main)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         mService.context = this
-     //   mService.startTimer()
+        mService.startTimer()
         bottombar.callback = this
         showFragment(fragmentToShow)
     }
