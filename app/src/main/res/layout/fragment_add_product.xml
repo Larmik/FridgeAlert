@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
+    android:background="@android:color/white"
     android:orientation="vertical"
     android:layout_height="match_parent">
 
@@ -16,7 +17,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/zillaslab_semibold"
             android:text="Ajouter un produit"
+            android:textColor="@android:color/black"
             android:layout_marginBottom="55dp"
             android:textSize="16sp"/>
 
@@ -24,6 +27,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -41,8 +45,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="20dp"
+                android:fontFamily="@font/monserrat_medium"
                 android:text="Ajouter une image"
-                android:textColor="@color/color4"
+                android:textColor="@android:color/black"
                 android:textSize="7sp"
                 android:translationY="-5dp" />
 
@@ -52,7 +57,7 @@
                 android:layout_height="20dp"
                 android:layout_below="@+id/add_tv"
                 android:layout_centerHorizontal="true"
-                android:tint="@color/color4"
+                android:tint="@android:color/black"
                 android:translationY="5dp"
                 app:srcCompat="@drawable/ic_add" />
 
@@ -66,8 +71,13 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name_et"
+                android:fontFamily="@font/monserrat_regular"
                 android:layout_width="match_parent"
+                android:maxLines="1"
+                android:imeOptions="actionDone"
+                android:inputType="textCapSentences"
                 android:hint="Nom du produit"
+                android:shadowColor="@color/color4"
                 android:layout_height="wrap_content"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -82,17 +92,22 @@
                 android:id="@+id/lblDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/monserrat_regular"
+                android:textSize="10sp"
                 android:text="Date de péremption :"/>
 
             <TextView
                 android:id="@+id/tvDate"
+                android:fontFamily="@font/zillaslab_semibold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
                 android:layout_marginBottom="20dp"
                 android:textSize="16sp"/>
 
             <DatePicker
                 android:id="@+id/dpResult"
+                android:theme="@style/MyDatePickerDialogTheme"
                 android:layout_width="300dp"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="20dp"/>
@@ -101,6 +116,10 @@
                 android:id="@+id/validate_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_rounded_corners"
+                android:backgroundTint="@color/color4"
+                android:fontFamily="@font/zillaslab_semibold"
+                android:textColor="@android:color/white"
                 android:padding="10dp"
                 android:layout_marginBottom="20dp"
                 android:text="Ajouter"/>

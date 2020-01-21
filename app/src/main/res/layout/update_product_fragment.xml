@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_rounded_corners"
+    android:backgroundTint="@android:color/white"
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
@@ -16,16 +18,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Editer un produit"
-            android:layout_marginBottom="55dp"
+            android:layout_marginBottom="40dp"
+            android:textColor="@android:color/black"
+            android:fontFamily="@font/zillaslab_semibold"
             android:textSize="16sp"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             app:srcCompat="@drawable/ic_food_placeholder"
-            android:layout_width="60dp"
-            android:layout_height="60dp"/>
+            android:background="@drawable/bg_rounded_corners"
+            android:tint="@android:color/white"
+            android:padding="10dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"/>
         <TextView
             android:layout_width="wrap_content"
+            android:textSize="10sp"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:fontFamily="@font/monserrat_regular"
             android:layout_marginBottom="20dp"
             android:text="Modifier l'image"/>
 
@@ -37,8 +47,11 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name_et"
+                android:fontFamily="@font/monserrat_regular"
                 android:layout_width="match_parent"
                 android:hint="Nom du produit"
+                android:inputType="textCapSentences"
+                android:imeOptions="actionDone"
                 android:layout_height="wrap_content"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -52,6 +65,8 @@
             <TextView
                 android:id="@+id/lblDate"
                 android:layout_width="wrap_content"
+                android:fontFamily="@font/monserrat_regular"
+                android:textSize="10dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:text="Date de péremption :"/>
@@ -65,8 +80,11 @@
                     android:id="@+id/tvDate"
                     tools:text="14 Janvier 2020"
                     android:layout_width="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:fontFamily="@font/zillaslab_semibold"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
+
                     android:layout_marginEnd="10dp"
                     android:textSize="16sp"/>
 
@@ -87,6 +105,10 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:layout_marginBottom="20dp"
+                android:background="@drawable/bg_rounded_corners"
+                android:backgroundTint="@color/color4"
+                android:fontFamily="@font/zillaslab_semibold"
+                android:textColor="@android:color/white"
                 android:text="Valider les changements"/>
 
         </LinearLayout>

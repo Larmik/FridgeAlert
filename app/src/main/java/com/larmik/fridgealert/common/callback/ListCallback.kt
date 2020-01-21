@@ -7,4 +7,6 @@ interface ListCallback {
     fun onListEmpty()
 
     fun onEditClick(product: Product)
+
+    fun onEditValidated(product: Product, position: Int)
 }

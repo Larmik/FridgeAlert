@@ -16,6 +16,7 @@ import com.larmik.fridgealert.common.model.Product
 import com.larmik.fridgealert.list.adapter.ProductListAdapter
 import com.larmik.fridgealert.list.callback.SwipeToDeleteCallback
 import com.larmik.fridgealert.update.UpdateProductFragment
+import com.larmik.fridgealert.utils.updateProduct
 import kotlinx.android.synthetic.main.fragment_product_list.view.*
 
 
@@ -23,6 +24,7 @@ class ProductListFragment : Fragment(), ListCallback {
 
     var products : ArrayList<Product>? = null
     lateinit var rootView : View
+    private var adapter: ProductListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,13 +33,13 @@ class ProductListFragment : Fragment(), ListCallback {
     ): View? {
         rootView = inflater.inflate(R.layout.fragment_product_list, container, false)
         rootView.recyclerview.layoutManager = LinearLayoutManager(activity)
-        val adapter = ProductListAdapter(requireContext())
-        adapter.callback = this
+        adapter = ProductListAdapter(requireContext())
+        adapter!!.callback = this
         rootView.recyclerview.adapter = adapter
-        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(adapter, ColorDrawable(Color.RED), ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)!!))
+        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(adapter!!, ColorDrawable(Color.RED), ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)!!))
         itemTouchHelper.attachToRecyclerView(rootView.recyclerview)
         products?.let {
-            adapter.addData(it)
+            adapter!!.addData(it)
         }
 
         if (products.isNullOrEmpty()) {
@@ -53,9 +55,15 @@ class ProductListFragment : Fragment(), ListCallback {
     }
 
     override fun onEditClick(product: Product) {
-        val fragment = UpdateProductFragment(product)
+        val fragment = UpdateProductFragment(product, adapter!!.getPosition(product))
+        fragment.callback = this
         if (!fragment.isAdded)
             fragment.show(childFragmentManager, "UpdateProductFragment.tag")
+    }
+
+    override fun onEditValidated(product: Product, position: Int) {
+       adapter!!.updateData(product, position)
+        requireContext().updateProduct(product)
     }
 
 

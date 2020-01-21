@@ -7,4 +7,18 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="MyDatePickerStyle" parent="@android:style/Widget.Material.Light.DatePicker">
+    <item name="android:headerBackground">@color/color4</item>
+    <item name="android:calendarTextColor">@color/color4</item>
+    <item name="android:dayOfWeekBackground">@color/color4</item>
+    <item name="android:yearListSelectorColor">@color/color4</item>
+    <item name="android:datePickerMode">calendar</item>
+    <item name="android:minDate">01/01/2000</item>
+    </style>
+
+    <style name="MyDatePickerDialogTheme" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:datePickerStyle">@style/MyDatePickerStyle</item>
+        <item name="android:colorAccent">@color/color4</item>
+    </style>
+
 </resources>

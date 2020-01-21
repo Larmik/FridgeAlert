@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="120dp"
+    android:background="@android:color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="bottom">
 
@@ -22,6 +23,7 @@
                 android:background="@drawable/bottombar_text_bg"
                 android:layout_width="0dp"
                 android:gravity="center"
+                android:fontFamily="@font/monserrat_regular"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Accueil"/>
@@ -31,6 +33,7 @@
                 android:background="@drawable/bottombar_text_bg"
                 android:layout_width="0dp"
                 android:gravity="center"
+                android:fontFamily="@font/monserrat_regular"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Mon frigo"/>
@@ -42,9 +45,11 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/monserrat_regular"
                 android:text="Ajouter"/>
 
             <androidx.appcompat.widget.AppCompatImageView

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.larmik.fridgealert.R
 import com.larmik.fridgealert.common.callback.ListCallback
@@ -12,6 +13,8 @@ import com.larmik.fridgealert.utils.deleteProduct
 import com.larmik.fridgealert.utils.getDate
 import kotlinx.android.synthetic.main.product_list_item.view.*
 import java.util.*
+import java.util.concurrent.TimeUnit
+
 
 class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<ProductListAdapter.ProductListViewHolder>() {
 
@@ -37,10 +40,19 @@ class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<P
         this.elements.addAll(elements)
         notifyDataSetChanged()
     }
+
     fun clearData() {
         elements.clear()
         notifyDataSetChanged()
     }
+
+    fun updateData(product: Product, position: Int) {
+        elements.remove(elements[position])
+        elements.add(position, product)
+        notifyDataSetChanged()
+    }
+
+    fun getPosition(product: Product) : Int = elements.indexOf(product)
 
     fun deleteProduct(position: Int) {
         val item = elements[position]
@@ -58,16 +70,54 @@ class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<P
             itemView.product_name.text = item.name
             itemView.add_product_date.text = "Ajouté le ${item.createdDate}"
             val daysRemaining = getRemainingDays(item)
-            itemView.expires_at.text = "$daysRemaining jours"
+            if (daysRemaining >= 0) {
+                when (daysRemaining) {
+                    0L -> {
+                        itemView.expires_lbl.text = "Périme"
+                        itemView.expires_at.text = "aujourd'hui"
+                        //TODO Change color why not
+                    }
+                    1L -> {
+                        itemView.expires_lbl.text = "Périme"
+                        itemView.expires_at.text = "demain"
+                    }
+                    else -> {
+                        itemView.expires_lbl.text = "Périme dans"
+                        itemView.expires_at.text = "$daysRemaining jours"
+                    }
+                }
+            }
+            else {
+                itemView.expires_lbl.visibility = View.GONE
+                itemView.expires_at.text = "Périmé"
+            }
+
+            setEasterEgg(item.name, itemView.expires_at)
         }
 
-        private fun getRemainingDays(item: Product) : Int {
-            val calendar = Calendar.getInstance()
-            val today = calendar.get(Calendar.DAY_OF_MONTH)
-            calendar.time = item.expireDate.getDate() as Date
-            val expires = calendar.get(Calendar.DAY_OF_MONTH)
-            return expires - today
+        private fun getRemainingDays(item: Product) : Long {
+            var calendar = Calendar.getInstance()
+            var expires = item.expireDate.getDate() as Date
+            calendar.time = expires
+            calendar.set(Calendar.HOUR, 23)
+            calendar.set(Calendar.MINUTE, 59)
+            calendar.set(Calendar.SECOND, 59)
+            expires = calendar.time
+            calendar = Calendar.getInstance()
+            calendar.set(Calendar.HOUR, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            val diff: Long = expires.time - calendar.time.time
+            return TimeUnit.DAYS.convert(
+                diff,
+                TimeUnit.MILLISECONDS
+            )
+        }
 
+        private fun setEasterEgg(productName : String, view : TextView) {
+            if (productName.trim().toLowerCase() == "Miel".toLowerCase()) {
+                view.text = "10 milliards d'années"
+            }
         }
 
     }
