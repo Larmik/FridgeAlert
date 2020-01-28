@@ -5,9 +5,14 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.IBinder
+import android.provider.Settings
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.larmik.fridgealert.NotificationReceiver
 import com.larmik.fridgealert.R
 import com.larmik.fridgealert.TestService
 import com.larmik.fridgealert.TestService.RunServiceBinder
@@ -22,9 +27,11 @@ import com.larmik.fridgealert.utils.addProduct
 import com.larmik.fridgealert.utils.loadProducts
 import kotlinx.android.synthetic.main.activity_main.*
 
+
 class MainActivity : AppCompatActivity(), NavigationCallback, ProductCallback {
 
     private var fragmentToShow = FragmentToShow.HOME
+    val br: NotificationReceiver = NotificationReceiver()
     lateinit var notificationManager : NotificationManager
     var mServiceBound = false
     var mService = TestService()
@@ -47,13 +54,23 @@ class MainActivity : AppCompatActivity(), NavigationCallback, ProductCallback {
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         mService.context = this
         mService.startTimer(true)
+        if (intent.hasExtra(Settings.EXTRA_CHANNEL_ID)) {
+            val intent = Intent()
+            intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
+            intent.putExtra("app_package", packageName)
+            intent.putExtra("app_uid", applicationInfo.uid)
+            intent.putExtra("android.provider.extra.APP_PACKAGE", packageName)
+            startActivity(intent)
+        }
         bottombar.callback = this
         showFragment(fragmentToShow)
     }
 
     override fun onStop() {
         super.onStop()
-        mService.foreground()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mService.foreground()
+        }
     }
 
     override fun onStart() {
@@ -79,7 +96,7 @@ class MainActivity : AppCompatActivity(), NavigationCallback, ProductCallback {
     }
 
     private fun showHomeFragment(): Fragment {
-        appbar_title.text = ""
+        appbar_title.text = "Accueil"
         var fragment: HomeFragment? =
             supportFragmentManager.findFragmentByTag(HomeFragment().tag) as? HomeFragment
         if (fragment == null)

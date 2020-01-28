@@ -69,7 +69,7 @@ class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<P
         fun bindData(item : Product) {
             itemView.product_name.text = item.name
             itemView.add_product_date.text = "Ajouté le ${item.createdDate}"
-            val daysRemaining = getRemainingDays(item)
+            val daysRemaining = item.getRemainingDays()
             if (daysRemaining >= 0) {
                 when (daysRemaining) {
                     0L -> {
@@ -95,24 +95,7 @@ class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<P
             setEasterEgg(item.name, itemView.expires_at)
         }
 
-        private fun getRemainingDays(item: Product) : Long {
-            var calendar = Calendar.getInstance()
-            var expires = item.expireDate.getDate() as Date
-            calendar.time = expires
-            calendar.set(Calendar.HOUR, 23)
-            calendar.set(Calendar.MINUTE, 59)
-            calendar.set(Calendar.SECOND, 59)
-            expires = calendar.time
-            calendar = Calendar.getInstance()
-            calendar.set(Calendar.HOUR, 0)
-            calendar.set(Calendar.MINUTE, 0)
-            calendar.set(Calendar.SECOND, 0)
-            val diff: Long = expires.time - calendar.time.time
-            return TimeUnit.DAYS.convert(
-                diff,
-                TimeUnit.MILLISECONDS
-            )
-        }
+
 
         private fun setEasterEgg(productName : String, view : TextView) {
             if (productName.trim().toLowerCase() == "Miel".toLowerCase()) {

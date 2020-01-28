@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginBottom="50dp"
+        android:fontFamily="@font/zillaslab_semibold"
         android:textSize="20sp"
         android:text="Bienvenue dans Fridge Alert !"/>
 
@@ -17,12 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:fontFamily="@font/monserrat_medium"
         android:textSize="14sp"
         android:text="L'app qui enregistre les aliments entrants et sortants de votre frigo afin d'éviter le gaspillage ! \n \n Rentrez vos dates de péremption et soyez avertis lorsqu'il est temps pour vous de manger un aliment. \n \n Economies garanties !"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Notif"
-        android:id="@+id/notif"/>
 </LinearLayout>
