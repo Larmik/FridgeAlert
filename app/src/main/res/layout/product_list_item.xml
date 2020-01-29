@@ -47,17 +47,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
+            android:layout_marginStart="10dp"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginEnd="25dp"
-                app:srcCompat="@drawable/ic_food_placeholder"/>
+                android:id="@+id/product_iv"
+                android:layout_width="70dp"
+                android:layout_height="100dp"
+                android:scaleType="fitXY"
+                android:background="@drawable/bg_rounded_corners"
+                android:layout_marginEnd="25dp"/>
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="100dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
@@ -69,15 +72,12 @@
                     android:fontFamily="@font/zillaslab_medium"
                     android:text="Pâte brisée"/>
 
-
-
-
             </LinearLayout>
 
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="100dp"
                 android:gravity="center"
                 android:layout_weight="1"
                 android:orientation="vertical">

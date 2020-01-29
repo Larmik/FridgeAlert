@@ -4,7 +4,7 @@ import com.larmik.fridgealert.utils.getDate
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-data class Product(val name : String = "Non renseigné", val expireDate : String, val createdDate : String) {
+data class Product(val name : String = "Non renseigné", val expireDate : String, val fileName : String, val createdDate : String) {
     var id: Long = 0
 
     fun getRemainingDays() : Long {
@@ -25,4 +25,6 @@ data class Product(val name : String = "Non renseigné", val expireDate : String
             TimeUnit.MILLISECONDS
         )
     }
+
+
 }

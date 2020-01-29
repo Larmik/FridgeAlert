@@ -41,10 +41,11 @@ class DbHelper(context: Context?) :
                     + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + DBContract.ProductEntry.COLUMN_NAME_PRODUCTNAME + " TEXT,"
                     + DBContract.ProductEntry.COLUMN_NAME_EXPIRES + " TEXT,"
+                    + DBContract.ProductEntry.COLUMN_NAME_IMAGE + " TEXT,"
                     + DBContract.ProductEntry.COLUMN_NAME_CREATED + " TEXT);")
         const val SQL_DELETE_PRODUCT_ENTRIES =
             "DROP TABLE IF EXISTS " + DBContract.ProductEntry.TABLE_NAME
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
         const val DATABASE_NAME = "database.db"
     }
 }

@@ -33,11 +33,10 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:background="@drawable/bg_rounded_corners"
                 android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:padding="10dp"
-                android:layout_centerInParent="true"
-                android:tint="@android:color/white"
-                app:srcCompat="@drawable/ic_food_placeholder" />
+                android:layout_height="100dp"
+                android:id="@+id/add_image_iv"
+                android:scaleType="fitXY"
+                android:layout_centerInParent="true" />
 
             <TextView
                 android:id="@+id/add_tv"
@@ -53,11 +52,13 @@
 
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ic_plus"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_below="@+id/add_tv"
                 android:layout_centerHorizontal="true"
                 android:tint="@android:color/black"
+                android:layout_marginTop="20dp"
                 android:translationY="5dp"
                 app:srcCompat="@drawable/ic_add" />
 

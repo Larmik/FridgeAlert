@@ -12,7 +12,6 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.larmik.fridgealert.NotificationReceiver
 import com.larmik.fridgealert.R
 import com.larmik.fridgealert.TestService
 import com.larmik.fridgealert.TestService.RunServiceBinder
@@ -20,6 +19,7 @@ import com.larmik.fridgealert.add.AddProductFragment
 import com.larmik.fridgealert.common.callback.NavigationCallback
 import com.larmik.fridgealert.common.callback.ProductCallback
 import com.larmik.fridgealert.common.model.Product
+import com.larmik.fridgealert.common.view.ProgressDialog
 import com.larmik.fridgealert.home.HomeFragment
 import com.larmik.fridgealert.list.ui.ProductListFragment
 import com.larmik.fridgealert.utils.FragmentToShow
@@ -31,8 +31,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), NavigationCallback, ProductCallback {
 
     private var fragmentToShow = FragmentToShow.HOME
-    val br: NotificationReceiver = NotificationReceiver()
     lateinit var notificationManager : NotificationManager
+    lateinit var progressDialog: ProgressDialog
     var mServiceBound = false
     var mService = TestService()
     private val mConnection: ServiceConnection = object : ServiceConnection {
@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity(), NavigationCallback, ProductCallback {
         setContentView(R.layout.activity_main)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         mService.context = this
+        progressDialog = ProgressDialog(this)
         mService.startTimer(true)
         if (intent.hasExtra(Settings.EXTRA_CHANNEL_ID)) {
             val intent = Intent()
@@ -62,7 +63,11 @@ class MainActivity : AppCompatActivity(), NavigationCallback, ProductCallback {
             intent.putExtra("android.provider.extra.APP_PACKAGE", packageName)
             startActivity(intent)
         }
+        add_product_btn.setOnClickListener {
+            onNavigation(FragmentToShow.ADD_PRODUCT)
+        }
         bottombar.callback = this
+
         showFragment(fragmentToShow)
     }
 
@@ -130,8 +135,10 @@ class MainActivity : AppCompatActivity(), NavigationCallback, ProductCallback {
     }
 
     override fun onProductAdded(product: Product) {
+        Toast.makeText(this, "Produit ajouté au frigo", Toast.LENGTH_SHORT).show()
         addProduct(product)
-        showFragment(FragmentToShow.PRODUCT_LIST)
     }
+
+
 
 }

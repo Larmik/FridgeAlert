@@ -7,13 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import coil.api.load
 import com.larmik.fridgealert.R
 import com.larmik.fridgealert.common.callback.ListCallback
 import com.larmik.fridgealert.common.model.Product
-import com.larmik.fridgealert.utils.getDate
-import com.larmik.fridgealert.utils.getExpireDate
-import com.larmik.fridgealert.utils.getString
-import com.larmik.fridgealert.utils.updateProduct
+import com.larmik.fridgealert.utils.*
+import kotlinx.android.synthetic.main.product_list_item.view.*
 import kotlinx.android.synthetic.main.update_product_fragment.view.*
 import java.util.*
 
@@ -30,6 +29,8 @@ class UpdateProductFragment(private val product : Product, private val position 
         val view = inflater.inflate(R.layout.update_product_fragment, container, false)
         view.name_et.setText(product.name)
         view.tvDate.text = product.expireDate.getDate()?.getString()
+        view.update_iv.clipToOutline = true
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             view.edit_date.setOnClickListener {
                 val dialogPicker = DatePickerDialog(requireContext(), R.style.MyDatePickerDialogTheme)
@@ -44,10 +45,15 @@ class UpdateProductFragment(private val product : Product, private val position 
                 dialogPicker.show()
             }
         }
+        val image = ImageSaver(requireContext())
+            .setFileName(product.fileName)
+            .load()
+        view.update_iv.load(image)
         view.validate_btn.setOnClickListener {
             val product = Product(
                     view.name_et.text.toString(),
                     view.tvDate.text.toString(),
+                product.fileName,
                     product.createdDate
             )
             product.id = this.product.id

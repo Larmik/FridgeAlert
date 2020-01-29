@@ -23,9 +23,7 @@ class BottomBar @JvmOverloads constructor(context : Context, attrs : AttributeSe
         view.goto_home.setOnClickListener {
             callback.onNavigation(FragmentToShow.HOME)
         }
-        view.add_product_btn.setOnClickListener {
-            callback.onNavigation(FragmentToShow.ADD_PRODUCT)
-        }
+
     }
 
 

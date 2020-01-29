@@ -3,16 +3,20 @@ package com.larmik.fridgealert.utils
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.Point
+import android.media.ExifInterface
+import android.net.Uri
+import android.os.Build
 import android.provider.BaseColumns
 import android.view.Display
 import android.view.WindowManager
 import android.widget.DatePicker
 import com.larmik.fridgealert.common.model.Product
-import kotlinx.android.synthetic.main.fragment_add_product.view.*
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 fun Context.displayHeight(): Int {
@@ -41,6 +45,7 @@ fun Context.loadProducts() : ArrayList<Product> {
         BaseColumns._ID,
         DBContract.ProductEntry.COLUMN_NAME_PRODUCTNAME,
         DBContract.ProductEntry.COLUMN_NAME_EXPIRES,
+        DBContract.ProductEntry.COLUMN_NAME_IMAGE,
         DBContract.ProductEntry.COLUMN_NAME_CREATED
     )
     val cursor: Cursor = db.query(
@@ -55,9 +60,11 @@ fun Context.loadProducts() : ArrayList<Product> {
             cursor.getString(cursor.getColumnIndexOrThrow(DBContract.ProductEntry.COLUMN_NAME_PRODUCTNAME))
         val expires: String =
             cursor.getString(cursor.getColumnIndexOrThrow(DBContract.ProductEntry.COLUMN_NAME_EXPIRES))
+        val image: String =
+            cursor.getString(cursor.getColumnIndexOrThrow(DBContract.ProductEntry.COLUMN_NAME_IMAGE))
         val created: String =
             cursor.getString(cursor.getColumnIndexOrThrow(DBContract.ProductEntry.COLUMN_NAME_CREATED))
-        val product = Product(name, expires, created)
+        val product = Product(name, expires, image, created)
         product.id = id
         products.add(product)
     }
@@ -87,6 +94,7 @@ fun Context.addProduct(item: Product) {
     val product = ContentValues()
     product.put(DBContract.ProductEntry.COLUMN_NAME_PRODUCTNAME, item.name)
     product.put(DBContract.ProductEntry.COLUMN_NAME_EXPIRES, item.expireDate)
+    product.put(DBContract.ProductEntry.COLUMN_NAME_IMAGE, item.fileName)
     product.put(DBContract.ProductEntry.COLUMN_NAME_CREATED, item.createdDate)
     db.insert(DBContract.ProductEntry.TABLE_NAME, null, product)
 }
@@ -96,6 +104,54 @@ fun Context.updateProduct(product: Product) {
     val db = mDbHelper.writableDatabase
     val cv = ContentValues()
     cv.put(DBContract.ProductEntry.COLUMN_NAME_PRODUCTNAME, product.name)
+    cv.put(DBContract.ProductEntry.COLUMN_NAME_IMAGE, product.fileName)
     cv.put(DBContract.ProductEntry.COLUMN_NAME_EXPIRES, product.expireDate)
     db.update(DBContract.ProductEntry.TABLE_NAME, cv, BaseColumns._ID + "=" + product.id, null)
 }
+
+
+fun Bitmap.rotateForGallery(context: Context, uri: Uri?): Bitmap? {
+    val matrix = Matrix()
+    return try {
+        uri?.getExifAngle(context)?.let { matrix.postRotate(it) }
+        Bitmap.createBitmap(this, 0, 0, this.width, this.height, matrix, true)
+    } catch (e: Exception) {
+        this
+    }
+}
+
+fun Uri.getExifInterface(context: Context): ExifInterface? {
+    try {
+        if (this.toString().startsWith("file://"))
+            return ExifInterface(this.toString())
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && this.toString().startsWith("content://"))
+            return ExifInterface(context.contentResolver.openInputStream(this)!!)
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+    return null
+}
+
+fun Uri.getExifAngle(context: Context): Float {
+    try {
+        val exifInterface = this.getExifInterface(context) ?: return -1f
+        return when (exifInterface.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_UNDEFINED
+        )) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+            ExifInterface.ORIENTATION_NORMAL -> 0f
+            ExifInterface.ORIENTATION_UNDEFINED -> -1f
+            else -> -1f
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return -1f
+    }
+}
+
+
+

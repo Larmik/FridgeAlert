@@ -1,27 +1,28 @@
 package com.larmik.fridgealert.list.adapter
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
 import com.larmik.fridgealert.R
 import com.larmik.fridgealert.common.callback.ListCallback
 import com.larmik.fridgealert.common.model.Product
+import com.larmik.fridgealert.utils.ImageSaver
 import com.larmik.fridgealert.utils.deleteProduct
-import com.larmik.fridgealert.utils.getDate
 import kotlinx.android.synthetic.main.product_list_item.view.*
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<ProductListAdapter.ProductListViewHolder>() {
 
     private val elements = arrayListOf<Product>()
+    private val images = arrayListOf<Bitmap>()
     var callback: ListCallback? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductListViewHolder = ProductListViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductListViewHolder = ProductListViewHolder(parent.context,
         LayoutInflater.from(parent.context).inflate(
         R.layout.product_list_item, parent, false))
 
@@ -36,13 +37,19 @@ class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<P
 
     }
 
-    fun addData(elements : List<Product>) {
-        this.elements.addAll(elements)
+    fun addData(products : List<Product>? = null, images: List<Bitmap>? = null) {
+        products?.let {
+            this.elements.addAll(it)
+        }
+        images?.let {
+            this.images.addAll(it)
+        }
         notifyDataSetChanged()
     }
 
     fun clearData() {
         elements.clear()
+        images.clear()
         notifyDataSetChanged()
     }
 
@@ -64,11 +71,16 @@ class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<P
     }
 
 
-    class ProductListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+    class ProductListViewHolder(private val context: Context, itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         fun bindData(item : Product) {
             itemView.product_name.text = item.name
+            itemView.product_iv.clipToOutline = true
             itemView.add_product_date.text = "Ajouté le ${item.createdDate}"
+            val image = ImageSaver(context)
+                .setFileName(item.fileName)
+                .load()
+            itemView.product_iv.load(image)
             val daysRemaining = item.getRemainingDays()
             if (daysRemaining >= 0) {
                 when (daysRemaining) {

@@ -24,12 +24,11 @@
             android:textSize="16sp"/>
 
         <androidx.appcompat.widget.AppCompatImageView
-            app:srcCompat="@drawable/ic_food_placeholder"
+            android:id="@+id/update_iv"
+            android:scaleType="fitXY"
             android:background="@drawable/bg_rounded_corners"
-            android:tint="@android:color/white"
-            android:padding="10dp"
             android:layout_width="70dp"
-            android:layout_height="70dp"/>
+            android:layout_height="100dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:textSize="10sp"

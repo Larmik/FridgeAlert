@@ -36,14 +36,13 @@ class TestService : Service() {
                 val currentMillis = System.currentTimeMillis()
                 mTimeLeftInMillis = (currentMillis + DAY_IN_MILLIS) - currentMillis
                 sendNotification()
-                //startTimer(false)
+                startTimer(false)
             }
         }.start()
         if (mTimeLeftInMillis == 0L) {
             resetTimer()
             startTimer(false)
         }
-
     }
 
     private fun resetTimer() {
