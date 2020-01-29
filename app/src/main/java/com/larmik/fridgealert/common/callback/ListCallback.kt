@@ -13,5 +13,4 @@ interface ListCallback {
 
     fun onImagesReady(list: List<Bitmap>)
 
-
 }

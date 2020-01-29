@@ -4,4 +4,5 @@ import com.larmik.fridgealert.common.model.Product
 
 interface ProductCallback {
     fun onProductAdded(product : Product)
+    fun onProductEdited(product : Product, position: Int)
 }

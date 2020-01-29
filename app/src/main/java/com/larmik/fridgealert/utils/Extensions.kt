@@ -1,5 +1,6 @@
 package com.larmik.fridgealert.utils
 
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -9,11 +10,13 @@ import android.graphics.Point
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.provider.BaseColumns
 import android.view.Display
 import android.view.WindowManager
 import android.widget.DatePicker
 import com.larmik.fridgealert.common.model.Product
+import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,17 +30,17 @@ fun Context.displayHeight(): Int {
     return size.y
 }
 
-fun DatePicker.getExpireDate() : String {
-        val day: Int = this.dayOfMonth
-        val month: Int = this.month
-        val year: Int = this.year
-        val calendar = Calendar.getInstance()
-        calendar[year, month] = day
-        return calendar.time.getString()
+fun DatePicker.getExpireDate(): String {
+    val day: Int = this.dayOfMonth
+    val month: Int = this.month
+    val year: Int = this.year
+    val calendar = Calendar.getInstance()
+    calendar[year, month] = day
+    return calendar.time.getString()
 
 }
 
-fun Context.loadProducts() : ArrayList<Product> {
+fun Context.loadProducts(): ArrayList<Product> {
     val products = arrayListOf<Product>()
     val mDbHelper = DbHelper(this)
     val db = mDbHelper.readableDatabase
@@ -79,12 +82,12 @@ fun Context.deleteProduct(product: Product) {
 }
 
 fun Date.getString(): String {
-    val format =  SimpleDateFormat("dd MMM yyyy")
+    val format = SimpleDateFormat("dd MMM yyyy")
     return format.format(this)
 }
 
 fun String.getDate(): Date? {
-    val format =  SimpleDateFormat("dd MMM yyyy")
+    val format = SimpleDateFormat("dd MMM yyyy")
     return format.parse(this)
 }
 
@@ -104,8 +107,9 @@ fun Context.updateProduct(product: Product) {
     val db = mDbHelper.writableDatabase
     val cv = ContentValues()
     cv.put(DBContract.ProductEntry.COLUMN_NAME_PRODUCTNAME, product.name)
-    cv.put(DBContract.ProductEntry.COLUMN_NAME_IMAGE, product.fileName)
     cv.put(DBContract.ProductEntry.COLUMN_NAME_EXPIRES, product.expireDate)
+    cv.put(DBContract.ProductEntry.COLUMN_NAME_IMAGE, product.fileName)
+    cv.put(DBContract.ProductEntry.COLUMN_NAME_CREATED, product.createdDate)
     db.update(DBContract.ProductEntry.TABLE_NAME, cv, BaseColumns._ID + "=" + product.id, null)
 }
 
@@ -151,6 +155,14 @@ fun Uri.getExifAngle(context: Context): Float {
         e.printStackTrace()
         return -1f
     }
+}
+
+@Throws(IOException::class)
+fun Activity.createImageFile(): File {
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+    val imageFileName = "JPEG_" + timeStamp + "_"
+    val storageDir = this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    return File.createTempFile(imageFileName, ".jpg", storageDir)
 }
 
 

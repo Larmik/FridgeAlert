@@ -15,16 +15,20 @@ import com.larmik.fridgealert.utils.ImageSaver
 import com.larmik.fridgealert.utils.deleteProduct
 import kotlinx.android.synthetic.main.product_list_item.view.*
 
-
-class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<ProductListAdapter.ProductListViewHolder>() {
+class ProductListAdapter(private val context: Context) :
+    RecyclerView.Adapter<ProductListAdapter.ProductListViewHolder>() {
 
     private val elements = arrayListOf<Product>()
     private val images = arrayListOf<Bitmap>()
     var callback: ListCallback? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductListViewHolder = ProductListViewHolder(parent.context,
-        LayoutInflater.from(parent.context).inflate(
-        R.layout.product_list_item, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductListViewHolder =
+        ProductListViewHolder(
+            parent.context,
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.product_list_item, parent, false
+            )
+        )
 
     override fun getItemCount(): Int = elements.size
 
@@ -34,10 +38,9 @@ class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<P
         holder.itemView.edit_btn.setOnClickListener {
             callback!!.onEditClick(item)
         }
-
     }
 
-    fun addData(products : List<Product>? = null, images: List<Bitmap>? = null) {
+    fun addData(products: List<Product>? = null, images: List<Bitmap>? = null) {
         products?.let {
             this.elements.addAll(it)
         }
@@ -47,23 +50,25 @@ class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<P
         notifyDataSetChanged()
     }
 
-    fun clearData() {
-        elements.clear()
-        images.clear()
-        notifyDataSetChanged()
-    }
-
     fun updateData(product: Product, position: Int) {
         elements.remove(elements[position])
         elements.add(position, product)
         notifyDataSetChanged()
     }
 
-    fun getPosition(product: Product) : Int = elements.indexOf(product)
+    fun addItem(product: Product) {
+        elements.add(product)
+        notifyDataSetChanged()
+    }
+
+    fun getPosition(product: Product): Int = elements.indexOf(product)
 
     fun deleteProduct(position: Int) {
         val item = elements[position]
         context.deleteProduct(item)
+        ImageSaver(context)
+            .setFileName(item.fileName)
+            .deleteFile()
         elements.remove(item)
         notifyItemRemoved(position)
         if (elements.isNullOrEmpty())
@@ -71,9 +76,10 @@ class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<P
     }
 
 
-    class ProductListViewHolder(private val context: Context, itemView : View) : RecyclerView.ViewHolder(itemView) {
+    class ProductListViewHolder(private val context: Context, itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
 
-        fun bindData(item : Product) {
+        fun bindData(item: Product) {
             itemView.product_name.text = item.name
             itemView.product_iv.clipToOutline = true
             itemView.add_product_date.text = "Ajouté le ${item.createdDate}"
@@ -98,18 +104,14 @@ class ProductListAdapter(private val context:  Context) : RecyclerView.Adapter<P
                         itemView.expires_at.text = "$daysRemaining jours"
                     }
                 }
-            }
-            else {
+            } else {
                 itemView.expires_lbl.visibility = View.GONE
                 itemView.expires_at.text = "Périmé"
             }
-
             setEasterEgg(item.name, itemView.expires_at)
         }
 
-
-
-        private fun setEasterEgg(productName : String, view : TextView) {
+        private fun setEasterEgg(productName: String, view: TextView) {
             if (productName.trim().toLowerCase() == "Miel".toLowerCase()) {
                 view.text = "10 milliards d'années"
             }

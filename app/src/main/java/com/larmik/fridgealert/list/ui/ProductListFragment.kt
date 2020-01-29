@@ -8,28 +8,28 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.larmik.fridgealert.R
 import com.larmik.fridgealert.common.callback.ListCallback
+import com.larmik.fridgealert.common.callback.ProductCallback
 import com.larmik.fridgealert.common.model.Product
 import com.larmik.fridgealert.common.view.ProgressDialog
 import com.larmik.fridgealert.list.adapter.ProductListAdapter
 import com.larmik.fridgealert.list.callback.SwipeToDeleteCallback
 import com.larmik.fridgealert.update.UpdateProductFragment
 import com.larmik.fridgealert.utils.LoadTask
-import com.larmik.fridgealert.utils.updateProduct
 import kotlinx.android.synthetic.main.fragment_product_list.view.*
 
 class ProductListFragment : Fragment(), ListCallback {
 
-    var products : ArrayList<Product>? = null
-    lateinit var rootView : View
+    var products: ArrayList<Product>? = null
+    lateinit var rootView: View
     lateinit var progressDialog: ProgressDialog
-    private var adapter: ProductListAdapter? = null
+    var callback: ProductCallback? = null
+    var adapter: ProductListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,7 +42,13 @@ class ProductListFragment : Fragment(), ListCallback {
         adapter!!.callback = this
         progressDialog = ProgressDialog(requireContext())
         rootView.recyclerview.adapter = adapter
-        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(adapter!!, ColorDrawable(Color.RED), ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)!!))
+        val itemTouchHelper = ItemTouchHelper(
+            SwipeToDeleteCallback(
+                adapter!!,
+                ColorDrawable(Color.RED),
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)!!
+            )
+        )
         itemTouchHelper.attachToRecyclerView(rootView.recyclerview)
 
         products?.let {
@@ -72,8 +78,8 @@ class ProductListFragment : Fragment(), ListCallback {
     }
 
     override fun onEditValidated(product: Product, position: Int) {
-       adapter!!.updateData(product, position)
-        requireContext().updateProduct(product)
+        adapter!!.updateData(product, position)
+        callback?.onProductEdited(product, position)
     }
 
     override fun onImagesReady(list: List<Bitmap>) {
@@ -81,8 +87,5 @@ class ProductListFragment : Fragment(), ListCallback {
         Handler().postDelayed({
             progressDialog.dismiss()
         }, 500)
-
     }
-
-
 }

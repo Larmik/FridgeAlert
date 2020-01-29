@@ -1,24 +1,17 @@
 package com.larmik.fridgealert.add
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import androidx.lifecycle.LifecycleOwner
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.core.content.FileProvider
-import androidx.lifecycle.coroutineScope
 import coil.api.load
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -30,11 +23,8 @@ import com.larmik.fridgealert.common.model.Product
 import com.larmik.fridgealert.common.view.ProgressDialog
 import com.larmik.fridgealert.utils.*
 import kotlinx.android.synthetic.main.fragment_add_product.view.*
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 
 class AddProductFragment : BottomSheetDialogFragment(), ProductCallback {
@@ -71,7 +61,7 @@ class AddProductFragment : BottomSheetDialogFragment(), ProductCallback {
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             var imageFile: File? = null
             try {
-                imageFile = createImageFile()
+                imageFile = activity?.createImageFile()
             } catch (e: IOException) {
 
             }
@@ -95,14 +85,16 @@ class AddProductFragment : BottomSheetDialogFragment(), ProductCallback {
             val fileName = "${System.currentTimeMillis()}.png"
             if (rootView.name_et.text.toString().isNotEmpty())
                 name = rootView.name_et.text.toString()
+
             progressDialog.show()
-            SaveTask(requireContext(),
-                fileName,
-                name,
-                rootView.dpResult.getExpireDate(),
+            val product = Product(name, rootView.dpResult.getExpireDate(), fileName, "")
+            SaveTask(
+                ProductAction.ADD,
+                requireContext(),
+                product,
                 productImage,
-                this)
-                .execute()
+                this
+            ).execute()
         }
         return rootView
     }
@@ -111,7 +103,7 @@ class AddProductFragment : BottomSheetDialogFragment(), ProductCallback {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 123) {
-                var bitmap: Bitmap? = null
+                val bitmap: Bitmap?
                 try {
                     if (data != null && data.data != null)
                         uri = data.data
@@ -125,11 +117,9 @@ class AddProductFragment : BottomSheetDialogFragment(), ProductCallback {
                     rootView.add_tv.visibility = View.INVISIBLE
                     rootView.ic_plus.visibility = View.INVISIBLE
                 }
-
             }
         }
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -155,23 +145,18 @@ class AddProductFragment : BottomSheetDialogFragment(), ProductCallback {
         year = c.get(Calendar.YEAR)
         month = c.get(Calendar.MONTH)
         day = c.get(Calendar.DAY_OF_MONTH)
-        // set current date into textview
         rootView.dpResult.init(year, month, day, null)
         rootView.tvDate.text = rootView.dpResult.getExpireDate()
-    }
-
-    @Throws(IOException::class)
-    fun createImageFile(): File {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val imageFileName = "JPEG_" + timeStamp + "_"
-        val storageDir = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(imageFileName, ".jpg", storageDir)
     }
 
     override fun onProductAdded(product: Product) {
         progressDialog.hide()
         dismiss()
         callback?.onProductAdded(product)
+    }
+
+    override fun onProductEdited(product: Product, position: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }
